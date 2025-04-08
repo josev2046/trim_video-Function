@@ -1,4 +1,5 @@
 ## trim_video Function
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15173478.svg)](https://doi.org/10.5281/zenodo.15173478)
 
 This function uses `subprocess.run` to trim a video file using ffmpeg's `ffmpeg -i input.mp4 -ss start_time -to end_time -c copy output.mp4.`
 
