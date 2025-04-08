@@ -1,0 +1,48 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+participant "script" as YS
+participant subprocess as SP
+participant ffmpeg
+
+title trim_video function
+
+YS -> YS: Define trim_video function
+note right: Function arguments:\n input_path, output_path,\n start_time, end_time
+
+YS -> YS: Construct ffmpeg command
+YS -> SP: subprocess.run(command, check=True, capture_output=True, text=True)
+activate SP
+SP -> ffmpeg: Execute command
+activate ffmpeg
+ffmpeg --> SP: Process result
+deactivate ffmpeg
+SP --> YS: Process result
+deactivate SP
+
+alt subprocess.run successful
+    YS -> YS: Print success message
+    YS -> YS: Return True
+else subprocess.run failed
+    SP -> ffmpeg: Execute command
+    activate ffmpeg
+    ffmpeg --> SP: stderr (from ffmpeg)
+    deactivate ffmpeg
+    SP --> YS: e.stderr (from subprocess.CalledProcessError)
+    YS -> YS: Print ffmpeg error
+    YS -> YS: Return False
+end
+
+note over YS: Example Usage\n(outside function)
+
+YS -> YS: Assign input_video, output_segment, start, end
+YS -> YS: Call trim_video(input_video, output_segment, start, end)
+
+alt trim_video returned True
+    YS -> YS: Proceed with further processing
+else trim_video returned False
+    YS -> YS: Handle the error
+end
+
+@enduml
